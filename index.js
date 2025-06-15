@@ -8,7 +8,7 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const generateUsernames = (count) => {
   const usernames = [];
   for (let i = 1; i <= count; i++) {
-    usernames.push(`trustg${String(i).padStart(2, '0')}`);
+    usernames.push(`tru12${String(i).padStart(2, '0')}`);
   }
   return usernames;
 };
