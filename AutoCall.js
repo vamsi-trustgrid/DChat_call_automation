@@ -9,7 +9,7 @@ const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 const generateUsernames = (count) => {
   const usernames = [];
   for (let i = 1; i <= count; i++) {
-    usernames.push(`sa10${String(i).padStart(2, '0')}`);
+    usernames.push(`ace${String(i).padStart(2, '0')}`);
   }
   return usernames;
 };
@@ -180,92 +180,6 @@ async function testCall(browser, user1, user2) {
     await testCall(browser, user1, user2);
     await delay(10000);
   }
-  console.log(`Call Success: ${callSuccess}`);
-  console.log(`Call Failure: ${callFailure}`);
-  await browser.close();
-})();
-
-
-    await delay(3000);
-
-
-   // Click contact and initiate call
-   await page1.bringToFront();
-    try {
-      await page1.waitForSelector('.contact-item', { visible: true });
-      await page1.click('.contact-item');
-      console.log(`${user1} clicked contact-item`);
-    } catch (err) {
-      console.log(` Contact-item click failed for ${user1}: ${err.message}`);
-    }
-
-    // Instead of delay, wait until call button is visible
-    try {
-    await page1.waitForFunction(() => {
-        return Array.from(document.querySelectorAll('.action-button'))
-        .some(btn => btn.getAttribute('onClick') === 'startCall(false)');
-    }, { timeout: 10000 });
-
-    await page1.evaluate(() => {
-        const buttons = document.querySelectorAll('.action-button');
-        for (let btn of buttons) {
-        if (btn.getAttribute('onClick') === 'startCall(false)') {
-            btn.click();
-            break;
-        }
-        }
-    });
-    console.log(`${user1} started audio call`);
-    } catch (err) {
-    console.log(` Audio call failed by ${user1}: ${err.message}`);
-    }
-
-
-    // Accept the call on user2
-    await page2.bringToFront();
-    try {
-    await page2.waitForSelector('button.accept-call', { timeout: 12000, visible: true });
-    await page2.click('button.accept-call');
-    console.log(`${user2} accepted the call`);
-    callSuccess++;
-    } catch (err) {
-    console.log(` ${user2} did not accept the call: ${err.message}`);
-    callFailure++;
-    }
-}catch(err){
-    console.log("testcall is not called properly")
-}
-}
-
-(async () => {
-  const browser = await puppeteer.launch({
-    headless: false,
-    slowMo: 50,
-    args: [
-      '--autoplay-policy=no-user-gesture-required',
-      '--use-fake-ui-for-media-stream',
-      '--use-fake-device-for-media-stream',
-      '--disable-background-timer-throttling',
-      '--disable-renderer-backgrounding',
-      '--disable-backgrounding-occluded-windows',
-      '--start-maximized'
-    ],
-    defaultViewport: null
-  });
-
-  const totalUsers = 10;
-  const usernames = generateUsernames(totalUsers);
-
-  for (let i = 0; i < usernames.length; i += 2) {
-    const user1 = usernames[i];
-    const user2 = usernames[i + 1];
-    if (!user2) break;
-
-    console.log(`\nTesting pair: ${user1} ↔ ${user2}`);
-    await testCall(browser, user1, user2);
-    await delay(10000);
-  }
-
   console.log(`Call Success: ${callSuccess}`);
   console.log(`Call Failure: ${callFailure}`);
   await browser.close();
